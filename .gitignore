@@ -1,1 +1,19 @@
+# vivado
 */prj/
+
+
+# vitis
+*.log
+*.obj
+*.o
+
+webtalk/
+.metadata/
+.analytics
+RemoteSystemsTempFiles
+**/*/export
+**/*/Debug
+**/*/Release
+**/*/logs
+
+
