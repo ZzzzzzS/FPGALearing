@@ -38,7 +38,7 @@ assign SDA_In_Wire = SDA;
 reg led_reg;
 assign led = led_reg;
 reg clk_Div;
-reg [15:0]DivCount;
+reg [7:0]DivCount;
 parameter Div=125;
 
 //////////////////////////////////////////////////////////////////////////////////
@@ -81,11 +81,11 @@ i2c i2c_inst(
 
 
 always @(posedge clk) begin
-    if (DivCount==16'd125) begin
-        DivCount <= 16'd0;
+    if (DivCount==7'd125) begin
+        DivCount <= 7'd0;
         clk_Div <= ~clk_Div;
     end else begin
-        clk_Div <= clk_Div + 16'd1;
+        DivCount <= DivCount + 16'd1;
     end
 end
 
