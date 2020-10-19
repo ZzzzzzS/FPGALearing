@@ -1,0 +1,12 @@
+set_property IOSTANDARD LVCMOS33 [get_ports button]
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports led]
+set_property IOSTANDARD LVCMOS33 [get_ports SCL]
+set_property IOSTANDARD LVCMOS33 [get_ports SDA]
+set_property PACKAGE_PIN N15 [get_ports button]
+set_property PACKAGE_PIN U18 [get_ports clk]
+set_property PACKAGE_PIN M14 [get_ports led]
+set_property PACKAGE_PIN T19 [get_ports SCL]
+set_property PACKAGE_PIN U19 [get_ports SDA]
+
+create_clock -period 20.000 -name clk -waveform {0.000 10.000} [get_ports clk]
