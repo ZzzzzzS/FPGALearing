@@ -21,3 +21,11 @@ Write-Output "vivado -mode batch -source .\build_project.tcl" >> "build_project.
 Write-Output "Remove-Item *.jou" >> "build_project.ps1"
 Write-Output "Remove-Item *.log" >> "build_project.ps1"
 Write-Output "Remove-Item .Xil/" >> "build_project.ps1"
+
+New-Item "update_project.ps1"
+Write-Output "vivado -mode batch -source .\update_project.tcl" >> "update_project.ps1"
+Write-Output "Remove-Item *.jou" >> "update_project.ps1"
+Write-Output "Remove-Item *.log" >> "update_project.ps1"
+Write-Output "Remove-Item .Xil/" >> "update_project.ps1"
+
+Copy-Item ..\update_project.tcl .\update_project.tcl
