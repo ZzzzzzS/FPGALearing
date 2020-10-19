@@ -33,7 +33,7 @@ wire SCLWire,SDA_In_Wire,SDA_Out_Wire,SDA_Ctrl_Wire;
 wire ValidWire;
 
 assign SDA = SDA_Ctrl_Wire?1'bz:SDA_Out_Wire;
-assign SDA = SDA_In_Wire;
+assign SDA_In_Wire = SDA;
 //////////////////////////////////////////////////////////////////////////////////
 reg led_reg;
 assign led = led_reg;

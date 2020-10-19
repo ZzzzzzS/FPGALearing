@@ -57,7 +57,7 @@ reg [2:0]next_state;
 
 reg LastStart;  //Start信号的上一个状态
 
-reg [2:0]BitsRemain; //发送或者接受剩余的bits
+reg [3:0]BitsRemain; //发送或者接受剩余的bits
 
 //////////////////////////////////////////////////////////////////////////////////
 localparam NO_ACK   = 0;
@@ -79,7 +79,7 @@ reg [7:0]ReadReg;
 
 reg ReadyReg;
 assign Ready = ReadyReg;
-assign Valid = ACK_State[0]; //根据ACK信号直接判断是否有效
+assign Valid = ACK_State[1]; //根据ACK信号直接判断是否有效
 //////////////////////////////////////////////////////////////////////////////////
 initial begin
 state=HOLDON;
@@ -87,10 +87,10 @@ next_state=HOLDON;
 LastStart=0;
 SCL_Reg=1;
 SDA_Out_Reg=1;
-SDA_In_Reg=1;
+SDA_In_Reg=0;
 SDA_R_W=WRITE;
 ACK_State=NO_ACK;
-BitsRemain=0;
+//BitsRemain=8;
 end
 //////////////////////////////////////////////////////////////////////////////////
 always @(posedge clk) begin
@@ -124,7 +124,7 @@ always @(posedge clk) begin
             SDA_Out_Reg <= WriteReg[7];
         end else begin        //SCL高电平，所存SDA，准备下一个SDA
             SCL_Reg     <= 1;
-            BitsRemain  <= BitsRemain - 3'd1;
+            BitsRemain  <= BitsRemain - 4'd1;
             WriteReg    <= {WriteReg[6:0],WriteReg[7]};
         end
         ACK_State       <= NO_ACK;
@@ -139,7 +139,7 @@ always @(posedge clk) begin
          end else begin //SCL高电平，接收数据
             SCL_Reg     <= 1;
             ReadReg[0]  <= SDA_In_Reg;
-            BitsRemain  <= BitsRemain - 3'd1;
+            BitsRemain  <= BitsRemain - 4'd1;
          end
          ACK_State      <= NO_ACK;
          SDA_R_W        <= READ;
@@ -149,32 +149,30 @@ always @(posedge clk) begin
     else if (state==ADDRESS_ACK || state==VALUE_ACK) begin
         if (SCL_Reg==1) begin //SCL低电平时改变SDA脚方向，准备接受ACK
             SCL_Reg     <= 0;
-            SDA_R_W     <= READ;
-            ACK_State   <= NO_ACK;
         end else begin
-            SCL_Reg     <= 1;
-            if (SDA_In_Reg==0) begin
-                ACK_State <= ACK;
-                WriteReg  <= WriteValue; //收到ACK信号就准备写入数据
-            end else begin
-                ACK_State <= NACK;
-            end
+            SCL_Reg     <= 1;           
         end
-        BitsRemain <= 3'd8;
+        if (SDA_In_Reg==0) begin
+            ACK_State <= ACK;
+            WriteReg  <= WriteValue; //收到ACK信号就准备写入数据
+        end else begin
+            ACK_State <= NACK;
+        end
+        BitsRemain <= 4'd8;
+        SDA_R_W     <= READ;
     end
 
     //发送读取数据的ACK
     else if(state == READ_ACK) begin
         if (SCL_Reg==1) begin //SCL低电平时改变SDA脚方向，准备发送ACK
             SCL_Reg <= 0;
-            SDA_R_W <= WRITE;
-            ACK_State <= NO_ACK;
-            SDA_Out_Reg <= 1;
         end else begin
-            SCL_Reg <= 1;
-            ACK_State <= ACK;
+            SCL_Reg <= 1; 
         end
-        BitsRemain <= 3'd8;
+        SDA_R_W <= WRITE;
+        SDA_Out_Reg <= 1;
+        ACK_State <= ACK;
+        BitsRemain <= 4'd8;
     end
 
     //开始状态
@@ -182,7 +180,7 @@ always @(posedge clk) begin
         SDA_R_W     <= WRITE; 
         SDA_Out_Reg <= 0; 
         SCL_Reg     <= 1; 
-        BitsRemain  <= 3'd8;  
+        BitsRemain  <= 4'd8;  
         WriteReg    <= {Address,R_W};
         ACK_State   <= NO_ACK;
 
@@ -197,6 +195,7 @@ always @(posedge clk) begin
         ACK_State   <= NO_ACK;
 
         ReadyReg    <= 0;
+        BitsRemain  <= 4'd8;
     end
 
 end
