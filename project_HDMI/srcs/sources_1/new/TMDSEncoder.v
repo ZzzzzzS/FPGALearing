@@ -50,8 +50,9 @@ reg [9:0]q_out_2;
 function [3:0]N1; //计算1的个数
     input [7:0]D;
     reg N1Reg;
-    begin
-        for (integer i=0;i<8;i=i+1) begin
+    begin:N1Block
+        integer i;
+        for (i=0;i<8;i=i+1) begin
             N1Reg=N1Reg+D[i];
         end
         N1=N1Reg;
@@ -61,8 +62,9 @@ endfunction
 function [3:0]N0; //计算0的个数
     input [7:0]D;
     reg N0Reg;
-    begin
-        for (integer i=0;i<8;i=i+1) begin
+    begin:N0Block
+        integer i;
+        for (i=0;i<8;i=i+1) begin
             N0Reg=N0Reg+(~D[i]);
         end
         N0=N0Reg;
@@ -82,10 +84,11 @@ end
 
 function [8:0]XOR; //异或运算
     input [7:0]D;
-    begin
+    begin:XORBlock
+        integer i;
         XOR[0]=D[0];
         XOR[8]=1;
-        for (integer i=1;i<8;i=i+1) begin
+        for (i=1;i<8;i=i+1) begin
             XOR[i]=XOR[i-1]^D[i];
         end
     end
@@ -93,10 +96,11 @@ endfunction
 
 function [8:0]XNOR; //同或运算
     input [7:0]D;
-    begin
+    begin:XNORBlock
+        integer i;
         XNOR[0]=D[0];
         XNOR[8]=0;
-        for (integer i=1;i<8;i=i+1) begin
+        for (i=1;i<8;i=i+1) begin
             XNOR[i]=XNOR[i-1]^~D[i];
         end
     end
